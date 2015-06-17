@@ -10,7 +10,7 @@ from collections import deque
 
 import pygame
 from pygame.locals import *
-
+import pickle
 import numpy as np
 import random
 
@@ -208,6 +208,9 @@ class PipePair(pygame.sprite.Sprite):
         # for collision detection
         self.mask = pygame.mask.from_surface(self.image)
 
+        self.top_y = top_pipe_end_y
+        self.bottom_y = bottom_pipe_end_y
+
     @property
     def top_height_px(self):
         """Get the top pipe's height, in pixels."""
@@ -311,7 +314,7 @@ class Neural_Network(object):
     def __init__(self, weights_list = None, chromosome = None):
         self.fitness = 1 #how fit it is to reproduce (based on the final score in the game)
 
-        self.input_layer_size = 2
+        self.input_layer_size = 4
         self.output_layer_size = 1
         self.hidden_layer_size = 6
 
@@ -459,6 +462,7 @@ i = 0
 while 1:
     if i:
         print "AVERAGE: " + str( sum([j.fitness for j in gen])/population)
+        pickle.dump(gen, open("good_gen.p", "wb"))
         gen = create_next_gen(gen,population)
     i+=1
     print "\n\nGENERATION: " + str(i)
@@ -500,10 +504,8 @@ while 1:
                         e.key in (K_UP, K_RETURN, K_SPACE)):
                     bird.msec_to_climb = Bird.CLIMB_DURATION
             if frame_clock % (FPS/2)  == 0:
-                X = [[(pipes[0].top_height_px + pipes[0].bottom_height_px)/2. - bird.y, pipes[0].x]]
-                #print X
-                #import time
-                #time.sleep(1)
+                X = [[pipes[0].top_y - bird.y, bird.y - pipes[0].bottom_y, pipes[0].x, bird.y]]
+                #X = [[(pipes[0].top_height_px + pipes[0].bottom_height_px)/2. - bird.y, pipes[0].x]]
                 network_choice = NN.forward(X)
                 if network_choice:
                     bird.msec_to_climb = Bird.CLIMB_DURATION
@@ -553,8 +555,8 @@ while 1:
              [ 0.50106525]
              [ 1.20453393]
          ]"""
-        #NN.fitness = frame_clock
-        NN.fitness = 1/(math.fabs((pipes[0].top_height_px + pipes[0].bottom_height_px)/2. - bird.y)) + frame_clock/10
+        NN.fitness = frame_clock
+        #NN.fitness = 1/(math.fabs((pipes[0].top_height_px + pipes[0].bottom_height_px)/2. - bird.y)) + frame_clock/10
 
         print NN.fitness
         #print('Game over! Score: %i' % score)
