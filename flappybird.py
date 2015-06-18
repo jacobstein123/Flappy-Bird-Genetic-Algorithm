@@ -331,10 +331,6 @@ class Neural_Network(object):
         if chromosome:
             self.decode_chromosome(chromosome)
 
-
-
-
-
         self.get_chromosome()
 
     def forward(self,X):
@@ -418,39 +414,6 @@ def create_next_gen(gen,population):
         parent2 = mutate(parent2)
         next_gen += [parent1,parent2]
     return next_gen
-"""
-def reproduce(first,second):
-    #generate two child Neural Networks with a combination of the weights of the two parent NNs
-    children = []
-    for child in xrange(2): #repeat for however many children you want per couple
-        weights_list = [] #stores the new W1 and W2 for the child
-        for weight in xrange(2): #goes through W1 and W2 of each parent
-            new_weight_list = []
-            weight_first = first.get_weight(weight)
-            weight_second = second.get_weight(weight)
-            for i,row in enumerate(weight_first): #each row
-                new_row = []
-                for j,first_weight in enumerate(row): #each weight in the row
-                    second_weight = weight_second[i][j] #get the weight of the other parent at the same position
-                    new_weight = random.choice([second_weight,first_weight])
-                    #new_weight = np.random.uniform(first_weight,second_weight) #create a new weight which is a random number between the two parent weights
-                    if random.random() < 0: #mutation rate
-                        new_weight += random.uniform(-1,1)
-                    new_row.append(new_weight)
-                new_weight_list.append(new_row)
-            weights_list.append(new_weight_list)
-        children.append(Neural_Network(weights_list))
-    return children
-
-def create_next_gen(gen,population):
-    next_gen = []
-    individual_chance = [[i,i.get_fitness()] for i in gen]
-    for _ in xrange(population/2):
-        first = weighted_choice(individual_chance)
-        second = weighted_choice(individual_chance)
-        next_gen += reproduce(first,second)
-    return next_gen
-"""
 
 pygame.init()
 
