@@ -427,14 +427,14 @@ def play():
 
 def learn():
     population = 10
-    gen = pickle.load(open('good_gen.p',"rb"))
+    gen = pickle.load(open('new_gen.p',"rb"))
     #gen = [Neural_Network(weights_list=weights_list[i]) for i in xrange(population)]
     i = 0
     best = 0
     while 1:
         if i:
             print "AVERAGE: " + str( sum([j.fitness for j in gen])/population)
-            pickle.dump(gen, open("good_gen.p", "wb"))
+            pickle.dump(gen, open("new_gen.p", "wb"))
             gen = create_next_gen(gen,population)
         i+=1
         print "\n\nGENERATION: " + str(i)
@@ -524,5 +524,10 @@ def game(NN):
         frame_clock += 1
 
     return frame_clock
-
-play()
+	
+#new_gen = [Neural_Network() for _ in xrange(10)]
+#pickle.dump(new_gen, open("new_gen.p","wb"))
+if "-learn" in sys.argv:
+	learn()
+else:
+	play()
